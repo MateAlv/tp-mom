@@ -7,17 +7,22 @@ class MessageMiddlewareQueueRabbitMQ(MessageMiddlewareQueue):
 
     def __init__(self, host, queue_name): 
         self.connection = pika.BlockingConnection(
-            pika.ConnectionParameters(host='localhost')
+            pika.ConnectionParameters(host=host)
         )
 
         self.channel = self.connection.channel()
 
-        self.channel.queue_declare(queue=queue_name)
+        self.queue_name = queue_name
 
-        
+        self.channel.queue_declare(queue=queue_name, durable=True, exclusive=False, auto_delete=False)
+
 
     def send(self, message: bytes):
-        pass
+        self.channel.basic_publish(
+            exchange='',
+            routing_key=self.queue_name,
+            body=message
+        )
 
     def start_consuming(self, on_message_callback):
         pass
