@@ -3,12 +3,13 @@ import random
 import string
 from .middleware import MessageMiddlewareQueue, MessageMiddlewareExchange
 
+def _init_pika_connection(host):
+    return pika.BlockingConnection(pika.ConnectionParameters(host=host))
+
 class MessageMiddlewareQueueRabbitMQ(MessageMiddlewareQueue):
 
     def __init__(self, host, queue_name): 
-        self.connection = pika.BlockingConnection(
-            pika.ConnectionParameters(host=host)
-        )
+        self.connection = _init_pika_connection(host)
 
         self.channel = self.connection.channel()
 
@@ -40,10 +41,22 @@ class MessageMiddlewareQueueRabbitMQ(MessageMiddlewareQueue):
 class MessageMiddlewareExchangeRabbitMQ(MessageMiddlewareExchange):
     
     def __init__(self, host, exchange_name, routing_keys):
-        pass
+        self.connection = _init_pika_connection(host)
+
+        self.channel = self.connection.channel()
+
+        self.exchange_name = exchange_name
+
+        self.routing_keys = routing_keys
+
+        self.channel.exchange_declare(exchange=exchange_name, exchange_type='direct', durable=True, auto_delete=False)
 
     def send(self, message: bytes):
-        pass
+        self.channel.basic_publish(
+            exchange=self.exchange_name,
+            routing_key=self.routing_keys,
+            body=message
+        )
 
     def start_consuming(self, on_message_callback):
         pass
