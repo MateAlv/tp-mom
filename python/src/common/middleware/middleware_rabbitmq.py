@@ -36,6 +36,7 @@ class MessageMiddlewareQueueRabbitMQ(MessageMiddlewareQueue):
         self.channel.stop_consuming()
 
     def close(self):
+        self.channel.close()
         self.connection.close()
 
 class MessageMiddlewareExchangeRabbitMQ(MessageMiddlewareExchange):
