@@ -32,10 +32,10 @@ class MessageMiddlewareQueueRabbitMQ(MessageMiddlewareQueue):
         )
         
     def stop_consuming(self):
-        pass
+        self.channel.stop_consuming()
 
     def close(self):
-        pass
+        self.connection.close()
 
 class MessageMiddlewareExchangeRabbitMQ(MessageMiddlewareExchange):
     
