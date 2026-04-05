@@ -25,8 +25,12 @@ class MessageMiddlewareQueueRabbitMQ(MessageMiddlewareQueue):
         )
 
     def start_consuming(self, on_message_callback):
-        pass
-
+        self.channel.basic_consume(
+            queue=self.queue_name,
+            on_message_callback=on_message_callback,
+            auto_ack=False
+        )
+        
     def stop_consuming(self):
         pass
 
