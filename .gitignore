@@ -294,3 +294,6 @@ $RECYCLE.BIN/
 python/src/common/middleware/middleware_rabbitmq.py
 
 golang/internal/solution
+
+# Removed tracking from .pdf asignment 
+TP Middlewares Orientados a Mensajes.pdf
